@@ -17,7 +17,7 @@ Nota:
 **ATENÇÃO**
 <br />
 
->Este servidor é uma implementação simples e parcial, destinada apenas como prova de conceito. Não possui todas as funcionalidades e recursos do servidor original!
+>Este servidor é uma implementação simples e parcial dependente do servidor [Master](https://github.com/P15c1n4/PWN3-Emulator-Master-Server), destinada apenas como prova de conceito. Não possui todas as funcionalidades e recursos do servidor original!
 <br>
 
 **Spawn** ✔
