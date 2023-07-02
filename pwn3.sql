@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 25-Jun-2023 às 02:58
+-- Tempo de geração: 03-Jul-2023 às 01:40
 -- Versão do servidor: 10.4.21-MariaDB
 -- versão do PHP: 8.0.12
 
@@ -32,7 +32,7 @@ CREATE TABLE `accchar` (
   `charId` int(11) NOT NULL,
   `nick` varchar(20) NOT NULL,
   `charSpec` varchar(40) NOT NULL,
-  `charStatus` varchar(5000) NOT NULL DEFAULT '010008004c6f737443617665000000000000000003001000477265617442616c6c734f66466972650100000000000c005265766f6c766572416d6d6f9c00000000000b00436f77626f79436f6465720100000000001000477265617442616c6c734f66466972650b00436f77626f79436f6465720000000000000000000000000000000000000004001c00416368696576656d656e745f477265617442616c6c734f66466972651000477265617442616c6c734f66466972650c004c6f737443617665427573680b00546f776e56697369746564',
+  `charStatus` varchar(5000) NOT NULL DEFAULT '04001c00416368696576656d656e745f477265617442616c6c734f66466972651000477265617442616c6c734f66466972650c004c6f737443617665427573680b00546f776e56697369746564',
   `charLocal` varchar(30) NOT NULL DEFAULT 'Town'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -48,6 +48,21 @@ CREATE TABLE `accont` (
   `accPass` char(30) NOT NULL,
   `accTeamHash` char(128) NOT NULL,
   `accTeamName` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `charitens`
+--
+
+CREATE TABLE `charitens` (
+  `id` int(11) NOT NULL,
+  `charId` int(11) NOT NULL,
+  `item` varchar(20) NOT NULL,
+  `total` int(11) NOT NULL,
+  `hand` tinyint(1) NOT NULL,
+  `bulletAta` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -95,6 +110,13 @@ ALTER TABLE `accont`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Índices para tabela `charitens`
+--
+ALTER TABLE `charitens`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK_charid` (`charId`);
+
+--
 -- Índices para tabela `mobsbears`
 --
 ALTER TABLE `mobsbears`
@@ -108,13 +130,19 @@ ALTER TABLE `mobsbears`
 -- AUTO_INCREMENT de tabela `accchar`
 --
 ALTER TABLE `accchar`
-  MODIFY `charId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `charId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- AUTO_INCREMENT de tabela `accont`
 --
 ALTER TABLE `accont`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT de tabela `charitens`
+--
+ALTER TABLE `charitens`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
 
 --
 -- AUTO_INCREMENT de tabela `mobsbears`
@@ -131,6 +159,12 @@ ALTER TABLE `mobsbears`
 --
 ALTER TABLE `accchar`
   ADD CONSTRAINT `accchar_ibfk_1` FOREIGN KEY (`accId`) REFERENCES `accont` (`id`);
+
+--
+-- Limitadores para a tabela `charitens`
+--
+ALTER TABLE `charitens`
+  ADD CONSTRAINT `FK_charid` FOREIGN KEY (`charId`) REFERENCES `accchar` (`charId`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

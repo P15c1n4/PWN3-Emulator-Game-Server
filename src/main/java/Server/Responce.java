@@ -1,5 +1,7 @@
 package Server;
 
+import Model.Char;
+import Model.Item;
 import Workers.MobMove;
 import Workers.PingPong;
 import Workers.ManaUpdate;
@@ -20,7 +22,8 @@ public class Responce extends Thread{
     public ArrayList<String> queu = new ArrayList();
     Packer packer = new Packer();
     DAO dao = new DAO(); 
-    
+    Char chara = new Char();
+    Item item = new Item();
     
     ManaUpdate manaUpdate; 
     InputStream inputStream;
@@ -32,14 +35,14 @@ public class Responce extends Thread{
     MobMove mobMove;
     boolean mobSpawned = false;
     MobStatus mobStatus;
-    
+
     
     int atualWep = 0;
-    String[][] wepStatus = new String[10][2];
+    String[][] wepStatus = new String[10][3];
     //public String[][] mobs = new String[10][10];
     public ArrayList<String[]> mobs = new ArrayList();
     public ArrayList<String[]> drops = new ArrayList();
-    
+    public ArrayList<String[]> itensInv = new ArrayList();
     
     
     public int playerMana = 100;
@@ -72,18 +75,19 @@ public class Responce extends Thread{
                 byte[] buffer = new byte[4096]; 
                 int bytesRead;
 
-                this.wepStatus[0][0] = "GreatBallsOfFire";
-                this.wepStatus[0][1] = "0";
-                this.wepStatus[1][0] = "CowboyCoder";
-                this.wepStatus[1][1] = "0";
                 atualWep = 1;
+                boolean firstC = true;
                 
                 while((bytesRead = inputStream.read(buffer)) != -1 && !Thread.currentThread().isInterrupted()){
 
                     String Hex = bytesToHex(buffer, bytesRead).replaceAll(" ", "");
-                    //System.out.println("\nCliente-->\n"+Hex);
-                    
 
+                    if(firstC){
+                        int pos = (Integer.valueOf(TradutorInt(8, 12, Hex, true))*2)+12;
+                        chara.setCharId(TradutorString(12, pos, Hex));
+                        ReloadInv();
+                        firstC = false;
+                    }
                     String magicByte = Hex.substring(0,4);
 
                     switch(magicByte){
@@ -111,7 +115,8 @@ public class Responce extends Thread{
                         case "6565":
                             PickItem(Hex);
                             break;
-                            
+                        
+                        //chat
                         case "232A":
                             Chat(Hex);
                             break;
@@ -175,40 +180,52 @@ public class Responce extends Thread{
         
         for (int i = 0; i < drops.size(); i++){
             if(drops.get(i)[4].equals(id)){
+                int quant = 0;
+                
+                if(Integer.valueOf(drops.get(i)[2]) <= 0){
+                    queu.add(packer.ObjFin(drops.get(i)[4]));
+                    drops.remove(i);
+                    SendQueuData();
+                    return;
+                    
+                }else{
+                    quant = Integer.valueOf(drops.get(i)[2]);
+                }
+                
                 switch (drops.get(i)[1]){
                     
                     case "RemoteExploit":
-                        for(int t = 0; t < 10; t++){
-                            if(wepStatus[t][0] == null){
-                                wepStatus[t][0] = "RemoteExploit";
-                                wepStatus[t][1] = "4";
-                                break;
-                            }
-                        }
+                        GiveWep(i,4,quant);
                         break;
                         
                     case "AKRifle":
-                        for(int t = 0; t < 10; t++){
-                            if(wepStatus[t][0] == null){
-                                wepStatus[t][0] = "AKRifle";
-                                wepStatus[t][1] = "30";
-                                break;
-                            }
-                        }
+                        GiveWep(i,30,quant);
                         break;
                         
                     case "Pistol":
-                        for(int t = 0; t < 10; t++){
-                            if(wepStatus[t][0] == null){
-                                wepStatus[t][0] = "Pistol";
-                                wepStatus[t][1] = "17";
-                                break;
-                            }
+                        GiveWep(i,17,quant);
+                        break;
+                        
+                    default:
+                        item.setItemName(drops.get(i)[1]);
+                        item.setCharID(chara.getCharId());
+                        item.setItemQuant(quant);
+                        item.setBulletAta(0);
+                        item.setHand(false);
+
+                        if(dao.ChackItem(item)){
+
+                            dao.UpdateInv(item);
+                        }else{
+
+                            dao.GiveItem(item);
                         }
                         break;
                 }
-                    
-                queu.add(packer.SendDrop(drops.get(i)[1], Integer.valueOf(drops.get(i)[2])));
+                   
+
+                
+                queu.add(packer.SendDrop(drops.get(i)[1], quant));
                 queu.add(packer.ObjFin(drops.get(i)[4]));
                 drops.remove(i);
                 SendQueuData();
@@ -311,30 +328,22 @@ public class Responce extends Thread{
         
         switch (wep){
             case "CowboyCoder":
-                queu.add(packer.Reload(wep, "RevolverAmmo", 6 - bullet));
-                wepStatus[atualWep][1] = "6";
-                SendQueuData();
+                SendRealod(wep,"RevolverAmmo",6,bullet);
                 break;
+                
             case "RemoteExploit":
-                queu.add(packer.Reload(wep, "SniperAmmo", 4 - bullet));
-                wepStatus[atualWep][1] = "4";
-                SendQueuData();
+                SendRealod(wep,"SniperAmmo",4,bullet);
                 break;
             
             case "Pistol":
-                queu.add(packer.Reload(wep, "PistolAmmo", 17 - bullet));
-                wepStatus[atualWep][1] = "17";
-                SendQueuData();
+                SendRealod(wep,"PistolAmmo",17,bullet);
                 break;     
                 
             case "AKRifle":
-                queu.add(packer.Reload(wep, "RifleAmmo", 30 - bullet));
-                wepStatus[atualWep][1] = "30";
-                SendQueuData();
+                SendRealod(wep,"RifleAmmo",30,bullet);
                 break;  
         }
-        
-        
+
     }
     
     
@@ -373,15 +382,22 @@ public class Responce extends Thread{
                 
             case "CowboyCoder":
                 
-                if(Integer.valueOf(wepStatus[1][1]) > 0){
-                    wepStatus[1][1] = String.valueOf(Integer.valueOf(wepStatus[1][1]) - 1);
-                    queu.add(packer.TotalBullet(skillName, Integer.valueOf(wepStatus[1][1])));
+                if(Integer.valueOf(wepStatus[atualWep][1]) > 0){
+                    wepStatus[atualWep][1] = String.valueOf(Integer.valueOf(wepStatus[1][1]) - 1);
+                    
+                    item.setCharID(chara.getCharId());
+                    item.setBulletAta(Integer.valueOf(wepStatus[atualWep][1]));
+                    item.setItemName(skillName);
+                    
+                    dao.UpdateInvBullet(item);
+                    
+                    queu.add(packer.TotalBullet(skillName, Integer.valueOf(wepStatus[atualWep][1])));
                     SendQueuData();
                     
                     HitMob(cX,cY,70);
 
                 }else{
-                    wepStatus[1][1] = "0";
+                    wepStatus[atualWep][1] = "0";
                 }
                 break;
                 
@@ -389,6 +405,13 @@ public class Responce extends Thread{
 
                     if(Integer.valueOf(wepStatus[atualWep][1]) > 0){
                          wepStatus[atualWep][1] = String.valueOf(Integer.valueOf(wepStatus[atualWep][1]) - 1);
+                        
+                        item.setCharID(chara.getCharId());
+                        item.setBulletAta(Integer.valueOf(wepStatus[atualWep][1]));
+                        item.setItemName(skillName);
+
+                        dao.UpdateInvBullet(item);
+                         
                          queu.add(packer.TotalBullet(skillName, Integer.valueOf(wepStatus[atualWep][1])));
                          SendQueuData();
 
@@ -404,6 +427,13 @@ public class Responce extends Thread{
 
                     if(Integer.valueOf(wepStatus[atualWep][1]) > 0){
                          wepStatus[atualWep][1] = String.valueOf(Integer.valueOf(wepStatus[atualWep][1]) - 1);
+                         
+                        item.setCharID(chara.getCharId());
+                        item.setBulletAta(Integer.valueOf(wepStatus[atualWep][1]));
+                        item.setItemName(skillName);
+
+                        dao.UpdateInvBullet(item);                         
+                         
                          queu.add(packer.TotalBullet(skillName, Integer.valueOf(wepStatus[atualWep][1])));
                          SendQueuData();
 
@@ -418,11 +448,18 @@ public class Responce extends Thread{
             case "AKRifle":
 
                     if(Integer.valueOf(wepStatus[atualWep][1]) > 0){
-                         wepStatus[atualWep][1] = String.valueOf(Integer.valueOf(wepStatus[atualWep][1]) - 1);
-                         queu.add(packer.TotalBullet(skillName, Integer.valueOf(wepStatus[atualWep][1])));
-                         SendQueuData();
+                        wepStatus[atualWep][1] = String.valueOf(Integer.valueOf(wepStatus[atualWep][1]) - 1);
+                         
+                        item.setCharID(chara.getCharId());
+                        item.setBulletAta(Integer.valueOf(wepStatus[atualWep][1]));
+                        item.setItemName(skillName);
 
-                         HitMob(cX,cY,15);
+                        dao.UpdateInvBullet(item);                         
+                         
+                        queu.add(packer.TotalBullet(skillName, Integer.valueOf(wepStatus[atualWep][1])));
+                        SendQueuData();
+
+                        HitMob(cX,cY,15);
 
                      }else{
                          wepStatus[atualWep][1] = "0";
@@ -596,6 +633,101 @@ public class Responce extends Thread{
 
     }
 
+    private void SendRealod(String wep,String ammo, int max, int bullet){
+        ReloadInv();
+        Item AmmoLessTotal = new Item();
+        for(String[] item: itensInv){
+            if(item[0].equals(ammo)){
+                if(max - bullet <= 0){
+                    return;
+                }
+                if(Integer.valueOf(item[1]) >= max - bullet){
+                    item[1] = String.valueOf(Integer.valueOf(item[1]) - (max - bullet));
+                    
+                    AmmoLessTotal.setCharID(chara.getCharId());
+                    AmmoLessTotal.setItemName(ammo);
+                    AmmoLessTotal.setItemQuant((max - bullet)*-1);
+                    dao.UpdateInv(AmmoLessTotal);
+                    queu.add(packer.Reload(wep, ammo, max - bullet));
+                    wepStatus[atualWep][1] = String.valueOf(max);
+                    
+                    AmmoLessTotal.setItemName(wep);
+                    AmmoLessTotal.setBulletAta(Integer.valueOf(wepStatus[atualWep][1]));
+                    
+                    dao.UpdateInvBullet(AmmoLessTotal);   
+                    
+                    SendQueuData();
+
+                }else{
+
+                    
+                    AmmoLessTotal.setCharID(chara.getCharId());
+                    AmmoLessTotal.setItemName(ammo);
+                    AmmoLessTotal.setItemQuant(0);
+                    dao.UpdateInv(AmmoLessTotal);
+                    
+                    queu.add(packer.Reload(wep, ammo, Integer.valueOf(item[1])));
+                    wepStatus[atualWep][1] = String.valueOf(Integer.valueOf(wepStatus[atualWep][1]) + Integer.valueOf(item[1]));
+                    
+                    AmmoLessTotal.setItemName(wep);
+                    AmmoLessTotal.setBulletAta(Integer.valueOf(wepStatus[atualWep][1]));
+                    
+                    dao.UpdateInvBullet(AmmoLessTotal);                    
+                    
+                    item[1] = "0";
+                    SendQueuData();
+                }
+            }
+        }
+    }
+
+    private void ReloadInv(){
+         itensInv.clear();
+         ArrayList<Item> itens = new ArrayList();
+
+         itens = dao.GetItens(chara);
+
+         int count = 0;
+         for(Item item: itens){
+             if(item.isHand()){
+                 this.wepStatus[count][0] = item.getItemName();
+                 this.wepStatus[count][1] = String.valueOf(item.getBulletAta());
+
+                 count ++;
+             }else{
+                 String[] itemInv = new String[2];
+                 itemInv[0] = item.getItemName();
+                 itemInv[1] = String.valueOf(item.getItemQuant());
+
+                 itensInv.add(itemInv);
+             }
+         }        
+    }
+    private void GiveWep(int dropAtual,int totalBullet, int quantidade){
+        Item newItem = new Item();
+        for(int t = 0; t < 10; t++){
+        if(wepStatus[t][0] == null){
+            wepStatus[t][0] = drops.get(dropAtual)[1];
+            wepStatus[t][1] = String.valueOf(totalBullet);
+
+            newItem.setCharID(chara.getCharId());
+            newItem.setItemName(drops.get(dropAtual)[1]);
+            newItem.setItemQuant(quantidade);
+            newItem.setHand(true);
+            newItem.setBulletAta(totalBullet);
+
+            if(dao.ChackItem(newItem)){
+
+                dao.UpdateInv(newItem);
+            }else{
+
+                dao.GiveItem(newItem);
+            }       
+
+            break;
+        }
+}
+    }
        //Inversor de String
     private String ReverseString(String Hex){
          String result = "";

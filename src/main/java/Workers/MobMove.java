@@ -43,43 +43,42 @@ public class MobMove extends Thread{
             }
             String result = "";
             String roteSpeed = "";
-            for(int t = 0; t < 2; t++){
+            for(int t = 0; t < 30; t++){
                 for(int i = 0; i < responce.mobs.size(); i++){
                     if( responce.mobs.get(i)[7].equals("1")){
                         float x = TradutorFloat(0,8,responce.mobs.get(i)[3],true);
                         float y = TradutorFloat(8,16,responce.mobs.get(i)[3],true);
                         float z = TradutorFloat(16,24,responce.mobs.get(i)[3],true);
 
-                        switch (t){
-                            case 1:
+                        if(t <= 14){
                                 if(i == 0){
-                                    x += 900;
-                                    z -= 50;
-                                    roteSpeed = "0000" + "0080" + "00"+"00" + "3F"+"FF" + "00"+"00" + "1000";
+                                    x += 67.5;
+                                    z -= 3.75;
+                                    roteSpeed = "0000" + "0000" + "00"+"00" + "80"+"00" + "00"+"00" + "1000";
                                 }else if(i == 1){
-                                    x += 900;
-                                    z -= 117;
-                                    roteSpeed = "0000" + "0080" + "00"+"00" + "3F"+"FF" + "00"+"00" + "1900"; //vertical/horizontal/rotação/ /speedX/speedY/speedZ
+                                    x += 67.5;
+                                    z -= 8.775;
+                                    roteSpeed = "0000" + "0000" + "00"+"00" + "80"+"00" + "00"+"00" + "1900"; //vertical/horizontal/rotação/ /speedX/speedY/speedZ
                                 }else{
-                                    x += 900;
-                                    roteSpeed = "0000" + "0080" + "00"+"00" + "3F"+"FF" + "00"+"00" + "0000"; //vertical/horizontal/rotação/ /speedX/speedY/speedZ                                    
+                                    x += 67.5;
+                                    roteSpeed = "0000" + "0000" + "00"+"00" + "80"+"00" + "00"+"00" + "0000"; //vertical/horizontal/rotação/ /speedX/speedY/speedZ                                    
                                 }
-                                break;
-                            case 0:
+                                
+                        }else if (t >= 15){
                                 if(i == 0){
-                                    x -= 900;
-                                    z += 50;
-                                    roteSpeed = "0000" + "0000" + "00"+"00" + "C0"+"00" + "00"+"00" + "F5FF"; //vertical/horizontal/rotação/ /speedX/speedY/speedZ                                                                        
+                                    x -= 67.5;
+                                    z += 3.75;
+                                    roteSpeed = "0000" + "0080" + "00"+"00" + "8F"+"FF" + "00"+"00" + "F5FF"; //vertical/horizontal/rotação/ /speedX/speedY/speedZ                                                                        
                                 }else if(i == 1){
-                                    x -= 900;
-                                    z += 117;
-                                    roteSpeed = "0000" + "0000" + "00"+"00" + "C0"+"00" + "00"+"00" + "E6FF"; //vertical/horizontal/rotação/ /speedX/speedY/speedZ
+                                    x -= 67.5;
+                                    z += 8.775;
+                                    roteSpeed = "0000" + "0080" + "00"+"00" + "8F"+"FF" + "00"+"00" + "E6FF"; //vertical/horizontal/rotação/ /speedX/speedY/speedZ
 
                                 }else{
-                                    x -= 900;
-                                    roteSpeed = "0000" + "0000" + "00"+"00" + "C0"+"00" + "00"+"00" + "0000"; //vertical/horizontal/rotação/ /speedX/speedY/speedZ                                    
+                                    x -= 67.5;
+                                    roteSpeed = "0000" + "0080" + "00"+"00" + "8F"+"FF" + "00"+"00" + "0000"; //vertical/horizontal/rotação/ /speedX/speedY/speedZ                                    
                                 }
-                                break;
+                                
 
                         }
 
@@ -91,11 +90,11 @@ public class MobMove extends Thread{
                         roteSpeed = "";
                     }
                 }
-                responce.SendQueuData();
                 responce.queu.add(result+"0000");
+                responce.SendQueuData();
                 result = "";
                 try {
-                    sleep(5000);
+                    sleep(375);
                 } catch (InterruptedException ex) {
                     this.interrupt();
 
