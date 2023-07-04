@@ -30,6 +30,8 @@ Nota:
 <br />
 **Drop/Pick itens** ✔
 <br />
+**persistência de itens** ✔
+<br />
 **Comandos internos** ✔
 <br />
 
