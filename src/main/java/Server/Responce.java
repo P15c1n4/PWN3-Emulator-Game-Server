@@ -5,23 +5,22 @@ import Model.Item;
 import Workers.MobMove;
 import Workers.PingPong;
 import Workers.ManaUpdate;
-import Workers.SkillMove;
 import Model.Mob;
 import Workers.MobStatus;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.Math;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HexFormat;
+import java.util.Map;
 
 public class Responce extends Thread{
 
     
     public ArrayList<String> queu = new ArrayList();
     Packer packer = new Packer();
-    DAO dao = new DAO(); 
+    DAO dao;
     Char chara = new Char();
     Item item = new Item();
     
@@ -47,10 +46,11 @@ public class Responce extends Thread{
     
     public int playerMana = 100;
     
-    public Responce(InputStream inputStream,OutputStream outputStream, String playerId){
+    public Responce(InputStream inputStream,OutputStream outputStream, String playerId, Map config){
         this.inputStream = inputStream;
         this.outputStream = outputStream;
         this.playerId = playerId;
+        this.dao = new DAO(config); 
     }
 
     @Override

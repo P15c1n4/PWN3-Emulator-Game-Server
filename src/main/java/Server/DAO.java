@@ -6,19 +6,25 @@ import Model.Item;
 import Model.Mob;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class DAO {
     
-    private final String driver = "com.mysql.cj.jdbc.Driver";
-    private final String url = "jdbc:mysql://127.0.0.1:3306/pwn3?useTimezone=true&serverTimezone=UTC";
-    private final String user = "root";
-    private final String password = "";
+    private String driver = "com.mysql.cj.jdbc.Driver";
+    private String url = "jdbc:mysql://127.0.0.1:3306/pwn3?useTimezone=true&serverTimezone=UTC";
+    private String user = "root";
+    private String password = "";
+    
+    public DAO(Map config){
+        this.url = "jdbc:mysql://"+config.get("DbIp").toString()+":"+config.get("DbPort").toString()+"/pwn3?useTimezone=true&serverTimezone=UTC";
+        this.user = config.get("DbLogin").toString();
+        this.password = config.get("DbPass").toString();
+    }
+    
     
     
     private Connection conectarMysql() {
@@ -27,7 +33,12 @@ public class DAO {
             Class.forName(driver);
             con = DriverManager.getConnection(url, user, password);
             return con;
-        } catch (Exception e) {
+            
+        }catch (SQLException e) {
+            System.out.println(e);
+            return null;
+            
+        }catch (Exception e){
             System.out.println(e);
             return null;
         }
@@ -59,7 +70,7 @@ public class DAO {
             
             return mobs;
             
-        }catch(Exception e){
+        }catch(SQLException e){
             System.out.println(e);
         }
 
@@ -93,7 +104,7 @@ public class DAO {
             }
 
             con.close();
-        }catch(Exception e){
+        }catch(SQLException e){
             System.out.println(e);
         }
         return itens;
@@ -118,8 +129,8 @@ public class DAO {
             pst.executeUpdate();
             
             con.close();
-        }catch(Exception e){
-            
+        }catch(SQLException e){
+            System.out.println(e);
         }
    }
 
@@ -137,7 +148,7 @@ public void UpdateInv(Item item){
             pst.executeUpdate();
             
             con.close();
-        }catch(Exception e){
+        }catch(SQLException e){
             System.out.println(e);
         }
     }else if(ChackItem(item)){
@@ -158,7 +169,7 @@ public void UpdateInv(Item item){
             pst.executeUpdate();
 
             con.close();
-        }catch(Exception e){
+        }catch(SQLException e){
             System.out.println(e);
         }
     }
@@ -179,7 +190,7 @@ public void UpdateInv(Item item){
                 pst.executeUpdate();
 
                 con.close();
-            }catch(Exception e){
+            }catch(SQLException e){
                 System.out.println(e);
             }
     }  
@@ -206,7 +217,7 @@ public void UpdateInv(Item item){
             }
 
  
-        }catch(Exception e){
+        }catch(SQLException e){
             System.out.println(e);
         }
         return false;

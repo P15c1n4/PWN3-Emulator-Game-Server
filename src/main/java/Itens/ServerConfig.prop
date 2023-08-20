@@ -1,0 +1,5 @@
+ServerPort:3001
+DbIp:127.0.0.1
+DbPort:3306
+DbLogin:root
+DbPass:
