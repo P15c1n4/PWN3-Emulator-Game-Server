@@ -91,8 +91,8 @@ public class Responce extends Thread{
                     String magicByte = Hex.substring(0,4);
 
                     switch(magicByte){
+                        //Uso Habilidade
                         case "2A69":
-
                             SpawnObjSkill(Hex);
                             break;
                         
@@ -146,7 +146,7 @@ public class Responce extends Thread{
                         ItemDrop(Integer.valueOf(stg[1]), "", 0, playerCoord);
 
                         queu.add(packer.SendChat(men,playerId));
-                        SendQueuData();
+                        //SendQueuData();
                     }catch(Exception e){
                         
                     }
@@ -163,13 +163,13 @@ public class Responce extends Thread{
                     }
                     
                     queu.add(packer.SendChat(men,playerId));
-                    SendQueuData();
+                    //SendQueuData();
                     
                     break;
             }
         }else{
             queu.add(packer.SendChat(men,playerId));
-            SendQueuData();
+            //SendQueuData();
         }
         
     }
@@ -185,7 +185,7 @@ public class Responce extends Thread{
                 if(Integer.valueOf(drops.get(i)[2]) <= 0){
                     queu.add(packer.ObjFin(drops.get(i)[4]));
                     drops.remove(i);
-                    SendQueuData();
+                    //SendQueuData();
                     return;
                     
                 }else{
@@ -228,7 +228,7 @@ public class Responce extends Thread{
                 queu.add(packer.SendDrop(drops.get(i)[1], quant));
                 queu.add(packer.ObjFin(drops.get(i)[4]));
                 drops.remove(i);
-                SendQueuData();
+                //SendQueuData();
                 break;
             }
         }
@@ -283,7 +283,7 @@ public class Responce extends Thread{
                 queu.add(packer.SpawnObj(mobs.get(i)[0], mobs.get(i)[1], mobs.get(i)[3], mobs.get(i)[2]));
                 queu.add(packer.AgrroStatus(mobs.get(i)[0],mobs.get(i)[4],mobs.get(i)[5]));
             }
-           SendQueuData();
+           //SendQueuData();
            mobSpawned = true;
            mobMove.continuar();
            mobStatus.continuar();
@@ -299,7 +299,7 @@ public class Responce extends Thread{
             mobSpawned = false;
             mobs.clear();
             queu.add(result+"0000");
-            SendQueuData();
+            //SendQueuData();
 
         }
         
@@ -315,7 +315,7 @@ public class Responce extends Thread{
         
         atualWep = Integer.valueOf(wepNum);        
         queu.add(packer.WepChange(wepNum));
-        SendQueuData();
+        //SendQueuData();
         
     }
 
@@ -367,7 +367,7 @@ public class Responce extends Thread{
                     playerMana -= 6;
                     queu.add(packer.ManaSetUpdate(playerMana));
                     //queu.add(packer.MoveObj(objId,playerCoord+playerCamera));
-                    SendQueuData();
+                    //SendQueuData();
                     
 //                    SkillMove move = new SkillMove(this, packer,playerCoord,playerCamera,objId); // tentativa de mover objeto(Falta o calculo certo)
 //                    move.start();
@@ -392,7 +392,7 @@ public class Responce extends Thread{
                     dao.UpdateInvBullet(item);
                     
                     queu.add(packer.TotalBullet(skillName, Integer.valueOf(wepStatus[atualWep][1])));
-                    SendQueuData();
+                    //SendQueuData();
                     
                     HitMob(cX,cY,70);
 
@@ -413,7 +413,7 @@ public class Responce extends Thread{
                         dao.UpdateInvBullet(item);
                          
                          queu.add(packer.TotalBullet(skillName, Integer.valueOf(wepStatus[atualWep][1])));
-                         SendQueuData();
+                         //SendQueuData();
 
                          HitMob(cX,cY,175);
 
@@ -435,7 +435,7 @@ public class Responce extends Thread{
                         dao.UpdateInvBullet(item);                         
                          
                          queu.add(packer.TotalBullet(skillName, Integer.valueOf(wepStatus[atualWep][1])));
-                         SendQueuData();
+                         //SendQueuData();
 
                          HitMob(cX,cY,15);
 
@@ -457,7 +457,7 @@ public class Responce extends Thread{
                         dao.UpdateInvBullet(item);                         
                          
                         queu.add(packer.TotalBullet(skillName, Integer.valueOf(wepStatus[atualWep][1])));
-                        SendQueuData();
+                        //SendQueuData();
 
                         HitMob(cX,cY,15);
 
@@ -524,7 +524,7 @@ public class Responce extends Thread{
             }
             mobs.get(index)[6] = String.valueOf(hp);
 
-            SendQueuData(); 
+            //SendQueuData(); 
         }        
     }
     
@@ -572,7 +572,7 @@ public class Responce extends Thread{
         drops.add(newDrop);
         
         queu.add(packer.SpawnObj(newDrop[4], newDrop[0], newDrop[3], "6400"));
-        SendQueuData();
+        //SendQueuData();
         
     }
     
@@ -621,6 +621,7 @@ public class Responce extends Thread{
 
                     outputStream.write(bytes, 0, bytesTotal);
                     queu.remove(i);
+                    
                 }
            }  
         }catch (IOException ex) {
@@ -656,7 +657,7 @@ public class Responce extends Thread{
                     
                     dao.UpdateInvBullet(AmmoLessTotal);   
                     
-                    SendQueuData();
+                    //SendQueuData();
 
                 }else{
 
@@ -675,7 +676,7 @@ public class Responce extends Thread{
                     dao.UpdateInvBullet(AmmoLessTotal);                    
                     
                     item[1] = "0";
-                    SendQueuData();
+                    //SendQueuData();
                 }
             }
         }

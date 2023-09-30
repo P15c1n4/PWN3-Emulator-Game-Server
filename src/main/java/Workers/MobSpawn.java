@@ -27,6 +27,9 @@ class MobSpawn extends Thread{
             this.interrupt();
             Logger.getLogger(MobSpawn.class.getName()).log(Level.SEVERE, null, ex);
         }
+        if(responce.mobs.size() < i){
+            return;
+        }
         responce.mobs.get(i)[6] = "145";
         if(responce.mobs.size() > 0){
             responce.queu.add(packer.ObjFin(responce.mobs.get(i)[0]));

@@ -21,7 +21,7 @@ public class PingPong extends Thread{
         try{ 
 
             while(true && !Thread.currentThread().isInterrupted()){
-                sleep(700);
+                sleep(100);
                 responce.queu.add("0000");
                 responce.SendQueuData();
             }
