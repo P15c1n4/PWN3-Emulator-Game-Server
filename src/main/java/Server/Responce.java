@@ -615,21 +615,29 @@ public class Responce extends Thread{
         try {
             if(queu.size() > 0){
                 for(int i = 0; i < queu.size(); i++){
-
+                      
                     byte[] bytes = HexFormat.of().parseHex(queu.get(i));
-                    int bytesTotal = bytes.length;
-
-                    outputStream.write(bytes, 0, bytesTotal);
+                    
                     queu.remove(i);
                     
+                    int bytesTotal = bytes.length;
+                    
+                    try{
+                        outputStream.write(bytes, 0, bytesTotal); 
+                        
+                    }catch(IOException e){
+                        System.out.println("Conexão Finalizada!");
+                        pingPong.interrupt();
+                        mobMove.interrupt();
+                        mobStatus.interrupt();
+                        manaUpdate.interrupt();
+                        this.interrupt();
+                        
+                    }
                 }
            }  
-        }catch (IOException ex) {
-            System.out.println("Conexão Finalizada!");
-            pingPong.interrupt();
-            mobMove.interrupt();
-            mobStatus.interrupt();
-            this.interrupt();
+        }catch (Exception ex) {
+            System.out.println(ex);
         }
 
     }
