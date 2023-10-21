@@ -22,26 +22,27 @@ class MobSpawn extends Thread{
         responce.mobs.get(i)[7] = "1";
        
         try {
-            sleep(10000);
-        } catch (InterruptedException ex) {
+           sleep(10000);
+            
+           responce.mobs.get(i)[6] = "145";
+
+           if(responce.mobs.size() > 0){
+               responce.queu.add(packer.ObjFin(responce.mobs.get(i)[0]));
+
+               responce.mobs.get(i)[0] = objId();
+
+
+               responce.queu.add(packer.SpawnObj(responce.mobs.get(i)[0], responce.mobs.get(i)[1], responce.mobs.get(i)[3], responce.mobs.get(i)[2]));
+               responce.queu.add(packer.AgrroStatus(responce.mobs.get(i)[0],responce.mobs.get(i)[4],responce.mobs.get(i)[5]));
+
+               responce.SendQueuData();
+           }
+           
+        } catch (Exception e) {
             this.interrupt();
-            Logger.getLogger(MobSpawn.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if(responce.mobs.size() < i){
-            return;
-        }
-        responce.mobs.get(i)[6] = "145";
-        if(responce.mobs.size() > 0){
-            responce.queu.add(packer.ObjFin(responce.mobs.get(i)[0]));
+        
 
-            responce.mobs.get(i)[0] = objId();
-
-
-            responce.queu.add(packer.SpawnObj(responce.mobs.get(i)[0], responce.mobs.get(i)[1], responce.mobs.get(i)[3], responce.mobs.get(i)[2]));
-            responce.queu.add(packer.AgrroStatus(responce.mobs.get(i)[0],responce.mobs.get(i)[4],responce.mobs.get(i)[5]));
-
-            responce.SendQueuData();
-        }
 
     }
     

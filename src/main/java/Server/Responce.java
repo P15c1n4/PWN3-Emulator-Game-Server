@@ -290,13 +290,16 @@ public class Responce extends Thread{
            
         }else if(y > expectedY && mobSpawned){
             String result = "";
+            mobMove.pausar();
+            mobStatus.pausar();
+            mobSpawned = false;
+           
+            
             for(int i = 0; i < mobs.size(); i++){       
                 result += packer.ObjFin(mobs.get(i)[0]);
                 
             }
-            mobMove.pausar();
-            mobStatus.pausar();
-            mobSpawned = false;
+
             mobs.clear();
             queu.add(result+"0000");
             //SendQueuData();
@@ -626,11 +629,13 @@ public class Responce extends Thread{
                         outputStream.write(bytes, 0, bytesTotal); 
                         
                     }catch(IOException e){
-                        System.out.println("Conexão Finalizada!");
+                        manaUpdate.pausar();
+                        mobMove.pausar();
                         pingPong.interrupt();
                         mobMove.interrupt();
                         mobStatus.interrupt();
                         manaUpdate.interrupt();
+                        System.out.println("Conexão Finalizada!");
                         this.interrupt();
                         
                     }

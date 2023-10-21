@@ -48,6 +48,10 @@ public class ManaUpdate extends Thread{
                 responce.playerMana += 1;
                 responce.queu.add(packer.ManaSetUpdate(responce.playerMana));
                 responce.SendQueuData();
+                
+                if(responce.playerMana >= 100){
+                    pausada = true;
+                }
             }
 
         }
