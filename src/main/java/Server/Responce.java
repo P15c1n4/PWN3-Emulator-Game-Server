@@ -34,7 +34,6 @@ public class Responce extends Thread{
     MobMove mobMove;
     boolean mobSpawned = false;
     MobStatus mobStatus;
-
     
     int atualWep = 0;
     String[][] wepStatus = new String[10][3];
@@ -44,6 +43,12 @@ public class Responce extends Thread{
     public ArrayList<String[]> itensInv = new ArrayList();
     
     
+    //dano armas
+    int wep_CowboyCoder;
+    int wep_RemoteExploit;
+    int wep_Pistol;
+    int wep_AKRifle;
+    
     public int playerMana = 100;
     
     public Responce(InputStream inputStream,OutputStream outputStream, String playerId, Map config){
@@ -51,6 +56,11 @@ public class Responce extends Thread{
         this.outputStream = outputStream;
         this.playerId = playerId;
         this.dao = new DAO(config); 
+        
+        this.wep_CowboyCoder = Integer.valueOf(config.get("damage_CowboyCoder").toString());
+        this.wep_RemoteExploit = Integer.valueOf(config.get("damage_RemoteExploit").toString());
+        this.wep_Pistol = Integer.valueOf(config.get("damage_Pistol").toString());
+        this.wep_AKRifle = Integer.valueOf(config.get("damage_AKRifle").toString());
     }
 
     @Override
@@ -397,7 +407,7 @@ public class Responce extends Thread{
                     queu.add(packer.TotalBullet(skillName, Integer.valueOf(wepStatus[atualWep][1])));
                     //SendQueuData();
                     
-                    HitMob(cX,cY,70);
+                    HitMob(cX,cY,wep_CowboyCoder);
 
                 }else{
                     wepStatus[atualWep][1] = "0";
@@ -418,7 +428,7 @@ public class Responce extends Thread{
                          queu.add(packer.TotalBullet(skillName, Integer.valueOf(wepStatus[atualWep][1])));
                          //SendQueuData();
 
-                         HitMob(cX,cY,175);
+                         HitMob(cX,cY,wep_RemoteExploit);
 
                      }else{
                          wepStatus[atualWep][1] = "0";
@@ -440,7 +450,7 @@ public class Responce extends Thread{
                          queu.add(packer.TotalBullet(skillName, Integer.valueOf(wepStatus[atualWep][1])));
                          //SendQueuData();
 
-                         HitMob(cX,cY,15);
+                         HitMob(cX,cY,wep_Pistol);
 
                      }else{
                          wepStatus[atualWep][1] = "0";
@@ -462,7 +472,7 @@ public class Responce extends Thread{
                         queu.add(packer.TotalBullet(skillName, Integer.valueOf(wepStatus[atualWep][1])));
                         //SendQueuData();
 
-                        HitMob(cX,cY,15);
+                        HitMob(cX,cY,wep_AKRifle);
 
                      }else{
                          wepStatus[atualWep][1] = "0";
@@ -635,7 +645,6 @@ public class Responce extends Thread{
                         mobMove.interrupt();
                         mobStatus.interrupt();
                         manaUpdate.interrupt();
-                        System.out.println("Conexão Finalizada!");
                         this.interrupt();
                         
                     }

@@ -33,7 +33,7 @@ public class ManaUpdate extends Thread{
                     try {
                         wait(); // Espera até ser notificado para continuar
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        return;
                     }
                 }
             }
@@ -42,7 +42,7 @@ public class ManaUpdate extends Thread{
                 try {
                     sleep(700);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(ManaUpdate.class.getName()).log(Level.SEVERE, null, ex);
+                        return;
                 }
 
                 responce.playerMana += 1;

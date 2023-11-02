@@ -27,7 +27,7 @@ public class PingPong extends Thread{
             }
             
         } catch (InterruptedException ex) {
-            System.out.println("PingPong Finalizado");
+            return;
             
         }
     
