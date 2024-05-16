@@ -1,6 +1,6 @@
 # PWN3 Emulator Game Server
 
-## Servidor Game parcialmente implementado utilizando técnicas de engenharia reversa em pacotes de rede, analisados pelo [PWN3-Proxy](https://github.com/P15c1n4/PWN3-Proxy), Com o intuito de criar uma prova de conceito para o TCC UNIP - 2023.
+## Servidor Word, parcialmente implementado de forma simples, utilizando técnicas de engenharia reversa em pacotes de rede trafegados entre o cliente e o servidor oficial. Os dados foram analisados pela ferramenta [PWN3-Proxy](https://github.com/P15c1n4/PWN3-Proxy), com o intuito de criar uma prova de conceito para o TCC UNIP.
 
 **USO**
 <br>
@@ -17,7 +17,7 @@ Nota:
 **ATENÇÃO**
 <br />
 
->Este servidor é uma implementação simples e parcial dependente do servidor [Master](https://github.com/P15c1n4/PWN3-Emulator-Master-Server), destinada apenas como prova de conceito. Não possui todas as funcionalidades e recursos do servidor original!
+>Este servidor é uma implementação simples e parcial, dependente do servidor [Master](https://github.com/P15c1n4/PWN3-Emulator-Master-Server), destinada apenas como prova de conceito. Não possui todas as funcionalidades e recursos do servidor original! E muito menos foram impregadas boas práticas de programação necessárias em um projeto real.
 <br>
 
 **Spawn** ✔
