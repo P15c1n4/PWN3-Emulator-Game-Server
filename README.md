@@ -1,6 +1,6 @@
 # PWN3 Emulator Game Server
 
-## Servidor Word, parcialmente implementado de forma simples, utilizando técnicas de engenharia reversa em pacotes de rede trafegados entre o cliente e o servidor oficial. <br><br>Os dados foram analisados pela ferramenta [PWN3-Proxy](https://github.com/P15c1n4/PWN3-Proxy), com o intuito de criar uma prova de conceito para um projeto de TCC.
+## Servidor Word, parcialmente implementado de forma simples, utilizando técnicas de engenharia reversa em pacotes de rede trafegados entre o cliente e o servidor oficial. <br><br>Os dados foram analisados pela ferramenta [PWN3-Proxy](https://github.com/P15c1n4/PWN3-Proxy), com o intuito de criar uma prova de conceito.
 
 **USO**
 <br>
